@@ -49,8 +49,8 @@ For usage, simply execute main.rb:
 
 ##
 
-Author :: Cody Tubbs :: (codytubbs+rcs@gmail.com)  
-[https://github.com/codytubbs/ruby-cloudtrail-slack][98]  
+Author :: Cody Tubbs :: (codytubbs+ram@gmail.com)  
+[https://github.com/codytubbs/ruby-aws-micoservice][98]  
 [https://github.com/codytubbs][99]
 
 [98]: https://github.com/codytubbs/ruby-cloudtrail-slack
