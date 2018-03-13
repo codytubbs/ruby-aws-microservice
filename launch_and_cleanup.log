@@ -1,0 +1,117 @@
+Output from successful launch:
+
+aws_microservice_stack cody$ ruby main.rb launch
+Using profile: [default] from credentials file: '/Users/cody/.aws/credentials'
+Creating VPC with CIDR block 10.0.0.0/16...
+VPC (10.0.0.0/16) created; vpc_id = [vpc-7f16d519]
+Creating private subnet #1 (10.0.1.0/24) in first AZ...
+Subnet created; priv_subnet1_id (10.0.1.0/24) = [subnet-20697547]; AZ = [us-west-2a]
+Creating private subnet #2 (10.0.2.0/24) in second AZ...
+Subnet created; priv_subnet2_id (10.0.2.0/24) = [subnet-56b1861f]; AZ = [us-west-2b]
+Creating public subnet #1 (10.0.100.0/24) in first AZ...
+Subnet created; pub_subnet1_id (10.0.100.0/24) = [subnet-46687421]; AZ = [us-west-2a]
+Creating public subnet #2 (10.0.200.0/24) in second AZ...
+Subnet created; pub_subnet1_id (10.0.200.0/24) = [subnet-31be8978]; AZ = [us-west-2b]
+Creating Internet gateway...
+Internet gateway created; internet_gateway_id = [igw-4dc57a2a]
+Attaching Intenet gateway to VPC...
+Internet gateway attached.
+Creating public subnet route table...
+Route Table created; route_table = [rtb-c9064caf]
+Creating route for 0.0.0.0/0 -> Internet gateway id...
+Route for 0.0.0.0/0 -> Internet gateway id added.
+Creating private subnet route table...
+Route Table created; route_table = [rtb-17074d71]
+Associating public route table [rtb-c9064caf with public subnet [subnet-46687421]
+Associated; association_id = [rtbassoc-baa787c3]
+Route table [rtb-c9064caf] <-> [subnet-46687421] subnet association complete.
+Associating public route table [rtb-c9064caf with public subnet [subnet-31be8978]
+Associated; association_id = [rtbassoc-85a686fc]
+Route table [rtb-c9064caf] <-> [subnet-31be8978] subnet association complete.
+Associating route table [rtb-17074d71 with subnet [subnet-20697547]
+Associated; association_id = [rtbassoc-f2a8888b]
+Route table [rtb-17074d71] <-> [subnet-20697547] subnet association complete.
+Associating route table [rtb-17074d71 with subnet [subnet-56b1861f]
+Associated; association_id = [rtbassoc-69aa8a10]
+Route table [rtb-17074d71] <-> [subnet-56b1861f] subnet association complete.
+Creating security group for ingress TCP port 80 on private subnet...
+Security group created; Security group id = [sg-2274a658]
+Creating security group for ingress TCP port 80 for LBs...
+Security group created; Security group id = [sg-ee75a794]
+Creating security group for ingress TCP port 22 for private subnet...
+Security group created; Security group id = [sg-087ba972]
+Creating security group for ingress TCP port 22 for public nat instances...
+Security group created; Security group id = [sg-7b79ab01]
+Creating security group for ingress TCP port 80 for NAT instance...
+Security group created; Security group id = [sg-e078aa9a]
+Adding ingress rule of *any* to the TCP port 80 private subnet security group...
+Rule added.
+Adding ingress rule of *any* to the TCP port 80 LB security group...
+Rule added.
+Adding ingress rule of (10.0.0.0/16) to the TCP port 80 for the private nat instance side...
+Rule added.
+Adding ingress rule of 10.0.100.0/24 to the TCP port 22 private subnet security group...
+Rule added.
+Adding ingress rule of 10.0.200.0/24 to the TCP port 22 private subnet security group...
+Rule added.
+Launching public subnet nat instances #1 and #2 in 10.0.100.0/24 and 10.0.200.0/24, respectively...
+nat_instance_id #1 = [i-03e6f381b68b14091];
+Waiting for nat instance #1 [i-03e6f381b68b14091] to enter running state.
+20.942127 seconds elapsed while waiting.
+Creating route for 0.0.0.0/0 -> nat instances in private route table...
+Route for 0.0.0.0/0 -> nat instances in private route table added.
+Disabling source/destination checking on nat instance #1... done.
+nat_instance_id #2 = [i-054d33b93ba02c0aa];
+Waiting for nat instance #2 [i-054d33b93ba02c0aa] to enter running state.
+15.831204 seconds elapsed while waiting.
+Disabling source/destination checking on nat instance #2... done.
+public 10.0.100.0/24 and 10.0.200.0/24 nat instance #1 and #2 launch complete.
+clb_dns_name = AutoCLB-1324014954.us-west-2.elb.amazonaws.com
+alb_dns_name = AutoALB-1311069481.us-west-2.elb.amazonaws.com
+target_group_arn = [arn:aws:elasticloadbalancing:us-west-2:987498575097:targetgroup/AutoALBTargetGroup/436f68e31ed07d4f]
+VPC: vpc-7f16d519
+Please wait ~3 minutes for the nginx service to become active.
+Application LoadBalancer DNS: AutoALB-1311069481.us-west-2.elb.amazonaws.com
+    Classic LoadBalancer DNS: AutoCLB-1324014954.us-west-2.elb.amazonaws.com
+
+
+
+Output from successful microservice (and complete vpc) cleanup:
+
+aws_microservice_stack cody$ ruby main.rb --vpc=vpc-7f16d519 cleanup
+Using profile: [default] from credentials file: '/Users/cody/.aws/credentials'
+Checking for nginx and nat instances, of all states...
+Check #1: instance-id=[i-03e6f381b68b14091] AMI=[ami-efd0428f] state=[running]
+Check #1: instance-id=[i-05293aeac7ec1323c] AMI=[ami-efd0428f] state=[running]
+Check #1: instance-id=[i-0b55e19ac788ebf4e] AMI=[ami-efd0428f] state=[running]
+Check #1: instance-id=[i-054d33b93ba02c0aa] AMI=[ami-efd0428f] state=[running]
+Check #1: instance-id=[i-06ea226f45ea516a1] AMI=[ami-efd0428f] state=[running]
+Check #1: instance-id=[i-06210bdfdd63815a7] AMI=[ami-efd0428f] state=[running]
+Attempting to terminate [6] instance(s), please wait up to 120 seconds...
+66.371552 seconds elapsed while terminating.
+Check #2: instance-id=[i-03e6f381b68b14091] AMI=[ami-efd0428f] state=[terminated]
+Check #2: instance-id=[i-05293aeac7ec1323c] AMI=[ami-efd0428f] state=[terminated]
+Check #2: instance-id=[i-0b55e19ac788ebf4e] AMI=[ami-efd0428f] state=[terminated]
+Check #2: instance-id=[i-054d33b93ba02c0aa] AMI=[ami-efd0428f] state=[terminated]
+Check #2: instance-id=[i-06ea226f45ea516a1] AMI=[ami-efd0428f] state=[terminated]
+Check #2: instance-id=[i-06210bdfdd63815a7] AMI=[ami-efd0428f] state=[terminated]
+Sleeping for 5 seconds...
+Deleting ALB listeners... done.
+Deleting ALB target groups... done.
+Deleting application and classic load balancers... done.
+Sleeping for 120 seconds, enough time for the ASG to fully disappear before deleting subnets.
+Removing subnet: subnet-31be8978, vpc-7f16d519, 10.0.200.0/24, us-west-2b; Done.
+Removing subnet: subnet-46687421, vpc-7f16d519, 10.0.100.0/24, us-west-2a; Done.
+Removing subnet: subnet-56b1861f, vpc-7f16d519, 10.0.2.0/24, us-west-2b; Done.
+Removing subnet: subnet-20697547, vpc-7f16d519, 10.0.1.0/24, us-west-2a; Done.
+Removing security group: sg-087ba972, vpc-7f16d519, sg_in_tcp_22_priv, Desc='Ingress TCP SSH:22 priv subnet'; Done.
+Removing security group: sg-2274a658, vpc-7f16d519, sg_in_tcp_80_priv, Desc='Ingress TCP HTTP:80 priv subnet'; Done.
+Removing security group: sg-7b79ab01, vpc-7f16d519, sg_in_tcp_22_pub, Desc='Ingress TCP SSH:22 NAT instances'; Done.
+Removing security group: sg-e078aa9a, vpc-7f16d519, sg_in_tcp_80_nat, Desc='Ingress TCP HTTP:80 to/through NAT instances'; Done.
+Removing security group: sg-ee75a794, vpc-7f16d519, sg_in_tcp_80_lb, Desc='Ingress TCP HTTP:80 LBs'; Done.
+Detaching Internet gateway: igw-4dc57a2a <-> vpc-7f16d519; Removing Internet gateway: igw-4dc57a2a <-> vpc-7f16d519; Done.
+Skipping rtbassoc-cfa989b6, causes exception.
+Removing route table: rtb-17074d71, vpc-7f16d519; Done.
+Removing route table: rtb-c9064caf, vpc-7f16d519; Done.
+Attempting to delete VPC [vpc-7f16d519]
+Deletion of vpc_id=[vpc-7f16d519] was a success.
